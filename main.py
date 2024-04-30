@@ -30,7 +30,7 @@ START_NODE = "W0"
 """Node to start the robot on."""
 START_ORIENTATION = 0
 """The absolute direction to start the robot facing."""
-pick_trees = ["T0", "T3", "T1", "T4", "T2", "T5"]
+PICK_TREES = "T0", "T3", "T1", "T4", "T2", "T5"
 """The order in which to pick trees."""
 
 # Mathematical
@@ -153,147 +153,6 @@ def fix_degrees(degrees: float) -> float:
         return fix_degrees(degrees + 360)
     else:
         return degrees
-
-
-class NodeType:
-    """An enumeration of the various types of nodes."""
-
-    LINE = 0
-    """Stops at the intersection of two lines."""
-    WALL = 2
-    """Stops when a wall is detected with the bumper."""
-    TREE = 3
-    """Stops when a tree is detected with the sonar sensors."""
-    BASKET = 4
-    """Stops based on encoder distance measurements."""
-
-
-class TreeHeight:
-    """An enumerastion of the possible tower heights."""
-
-    SHORT = 25
-    """The shortest height."""
-    NORMAL = 50
-    """The middle height."""
-    TALL = 75
-    """The tallest height."""
-
-    TREE_HEIGHTS = ((NORMAL, NORMAL, TALL),
-                    (TALL, SHORT, NORMAL),
-                    (NORMAL, TALL, SHORT))
-    """The heights of trees in the challenge map."""
-
-
-class TravelState:
-    """An enumeration of the different modes when driving."""
-
-    IDLE = 0
-    """Robot is stopped, currently waiting for an updated target."""
-    TURN = 1
-    """Robot is turning, using the IMU to maintain heading."""
-    LINE = 2
-    """Robot is following the line."""
-    THRU = 3
-    """Robot is traveling forward until it passes a node trigger."""
-    SLOW = 4
-    """Robot is slowing as it approaches a known distance."""
-
-
-class DepositState:
-    """An enumeration of the sequence to face a basket."""
-
-    START = 0
-    """Sets orientation target for next state."""
-    TURN_AWAY = 1
-    """Turns away from the basket by 90 degrees."""
-    DRIVE_AWAY = 2
-    """Drive away from the basket a given distance."""
-    ACTION = 3
-    """Runs a given action until completion."""
-    DRIVE_BACK = 4
-    """Drives back to its initial position."""
-    END = 5
-    """Deposit sequence has been completed."""
-
-
-class SetupState:
-    """An enumeration of the steps in the basket setup process."""
-
-    START = 0
-    """Robot is driving toward the correct line node."""
-    TRAVEL = 1
-    """Robot is driving toward next basket node to scan."""
-    DEPOSIT = 2
-    """Robot is turning away from the box."""
-    END = 3
-    """Robot has completed its scanning routine."""
- 
-
-class GrabState:
-    """An enumeration of the steps in the grabbing sequence."""
-
-    START = 0
-    """Setting up the color signature and rotation goal."""
-    ORIENT = 1
-    """Turns to face the tree, raises tower halfway."""
-    BACKUP = 2
-    """Backs away from the tree a given amount."""
-    SEARCH = 3
-    """Identifies the fruit."""
-    CENTER = 4
-    """Centers on and approaches the fruit."""
-    FORWARD = 5
-    """Drives toward the fruit a fixed amount."""
-    GRAB = 6
-    """Closes the gripper on the fruit."""
-    RETURN = 7
-    """Backs up the same distance it drove forward."""
-    REORIENT = 8
-    """Rotates until it finds the line, and update orientation."""
-    END = 9
-    """Robot has grabbed the fruit"""
-
-
-class Routine:
-    """An enumeration of the different routines the robot follows."""
-
-    SETUP = 0
-    """Detecting and storing the locations and colors of the baskets."""
-    TRAVEL_FRUIT = 1
-    """Traversing the currently defined path to a fruit."""
-    GRAB = 2
-    """Locating and grabbing a fruit, and storing the color."""
-    TRAVEL_BASKET = 3
-    """Traversing the currently defined path to a basket."""
-    DEPOSIT = 4
-    """Depositing the current fruit in the correct basket."""
-
-
-class Fruit:
-    """The vision signatures for different types of fruit."""
-
-    LEMON = Signature(1, 2521, 2893, 2707, -3613, -3411, -3512, 2.5, 0)
-    """The yellow fruit."""
-    LIME = Signature(2, -5299, -4901, -5100, -3355, -3029, -3192, 4, 0)
-    """The green fruit."""
-    TANGERINE = Signature(3, 5269, 6699, 5984, -2719, -2463, -2591, 2.5, 0)
-    """The orange fruit."""
-    GRAPEFRUIT = Signature(4, 6063, 6895, 6479, 865, 1097, 981, 2.5, 0)
-    """The pink fruit."""
-
-    TREE_COLORS = TANGERINE, LEMON, LIME
-    """The order of tree colors in the orchard."""
-
-    LEMON_BASKET = Code(GRAPEFRUIT, LEMON)
-    """The yellow and pink basket."""
-    LIME_BASKET = Code(GRAPEFRUIT, LIME)
-    """The green and pink basket."""
-    TANGERINE_BASKET = Code(GRAPEFRUIT, TANGERINE)
-    """The orange and pink basket."""
-
-    FRUIT_TABLE = ((LEMON_BASKET, LEMON, "Lemon"),
-                   (LIME_BASKET, LIME, "Lime"),
-                   (TANGERINE_BASKET, TANGERINE, "Tangerine"))
 
 
 class Point:
@@ -887,6 +746,62 @@ class Dijkstra:
         return string
 
 
+class NodeType:
+    """An enumeration of the various types of nodes."""
+
+    LINE = 0
+    """Stops at the intersection of two lines."""
+    WALL = 2
+    """Stops when a wall is detected with the bumper."""
+    TREE = 3
+    """Stops when a tree is detected with the sonar sensors."""
+    BASKET = 4
+    """Stops based on encoder distance measurements."""
+
+
+class TreeHeight:
+    """An enumerastion of the possible tower heights."""
+
+    SHORT = 25
+    """The shortest height."""
+    NORMAL = 50
+    """The middle height."""
+    TALL = 75
+    """The tallest height."""
+
+    TREE_HEIGHTS = ((NORMAL, NORMAL, TALL),
+                    (TALL, SHORT, NORMAL),
+                    (NORMAL, TALL, SHORT))
+    """The heights of trees in the challenge map."""
+
+
+class Fruit:
+    """The vision signatures for different types of fruit."""
+
+    LEMON = Signature(1, 2521, 2893, 2707, -3613, -3411, -3512, 2.5, 0)
+    """The yellow fruit."""
+    LIME = Signature(2, -5299, -4901, -5100, -3355, -3029, -3192, 4, 0)
+    """The green fruit."""
+    TANGERINE = Signature(3, 5269, 6699, 5984, -2719, -2463, -2591, 2.5, 0)
+    """The orange fruit."""
+    GRAPEFRUIT = Signature(4, 6063, 6895, 6479, 865, 1097, 981, 2.5, 0)
+    """The pink fruit."""
+
+    TREE_COLORS = TANGERINE, LEMON, LIME
+    """The order of tree colors in the orchard."""
+
+    LEMON_BASKET = Code(GRAPEFRUIT, LEMON)
+    """The yellow and pink basket."""
+    LIME_BASKET = Code(GRAPEFRUIT, LIME)
+    """The green and pink basket."""
+    TANGERINE_BASKET = Code(GRAPEFRUIT, TANGERINE)
+    """The orange and pink basket."""
+
+    FRUIT_TABLE = ((LEMON_BASKET, LEMON, "Lemon"),
+                   (LIME_BASKET, LIME, "Lime"),
+                   (TANGERINE_BASKET, TANGERINE, "Tangerine"))
+
+
 class Orchard:
 
     def __init__(self, start: str) -> None:
@@ -1000,16 +915,16 @@ class Orchard:
 
 class Chassis:
     
-    def __init__(self, lm: Motor, rm: Motor, ll: Line, rl: Line, imu: Inertial) -> None:
-        self.left_motor = lm
-        self.right_motor = rm
-        self.motors = MotorGroup(rm, lm)
+    # Creates a new chassis with the appropriate motors and sensors
+    def __init__(self, brain: Brain) -> None:
+        self.left_motor = Motor(Ports.PORT9, True)
+        self.right_motor = Motor(Ports.PORT10)
+        self.motors = MotorGroup(self.left_motor, self.right_motor)
 
-        self.left_line = ll
-        self.right_line = rl
-        self.inertial = imu
+        self.left_line = Line(brain.three_wire_port.e)
+        self.right_line = Line(brain.three_wire_port.f)
+        self.inertial = Inertial(Ports.PORT11)
 
-        self.thru = self.on_node
         self.target = 0.0
         self.heading = 0.0
 
@@ -1087,8 +1002,8 @@ class Chassis:
             effort = MAX_EFFORT_STRAIGHT
 
         # find the distance from the desired wall following distance
-        diff = ((self.left_line.reflectivity() -
-                 self.right_line.reflectivity()))
+        diff = (self.left_line.reflectivity() -
+                self.right_line.reflectivity())
         diff = diff**2 * sign(diff) * KP_LINE
 
         # turn both motors based on a differential
@@ -1130,14 +1045,15 @@ class Chassis:
 
 class Tower:
     
-    def __init__(self, rack: Motor, lim: Limit, grip: Motor) -> None:
-        self.rack = rack
-        self.limit = lim
-        self.gripper = grip
-
-        self._target = 0
+    # creates a new tower with the appropriate motors and sensors
+    def __init__(self, brain: Brain) -> None:
+        self.rack = Motor(Ports.PORT1)
+        self.limit = Limit(brain.three_wire_port.g)
+        self.gripper = Motor(Ports.PORT3, True)
 
         self.limit.pressed(self.rack.reset_position)
+
+        self._target = 0
 
     # Opens gripper until position is reset
     # Returns whether the gripper should continue opening
@@ -1214,55 +1130,31 @@ class Tower:
 
 class Robot:
 
-    def __init__(self, ch: Chassis, tw: Tower, vs: Vision, ls: Sonar, rs: Sonar, bm: Bumper, oc: Orchard, orientation: float=0) -> None:
-        self.chassis = ch
-        self.tower = tw
-        self.left_sonar = ls
-        self.right_sonar = rs
-        self.bumper = bm
-        self.vision = vs
-        self.orchard = oc
+    def __init__(self) -> None:
+        self.brain = Brain()
 
-        self.travel_state = TravelState.IDLE
-        self.deposit_state = DepositState.END
-        self.setup_state = SetupState.START
-        self.grab_state = GrabState.END
+        self.chassis = Chassis(self.brain)
+        self.tower = Tower(self.brain)
+        self.orchard = Orchard(START_NODE)
 
-        self._orientation = orientation
+        self.left_sonar = Sonar(self.brain.three_wire_port.a)
+        self.right_sonar = Sonar(self.brain.three_wire_port.c)
+        self.bumper = Bumper(self.brain.three_wire_port.h)
 
-        self._unsetup = self.orchard.baskets.copy()
+        self.vision_fruit = Vision(Ports.PORT2, 50,
+                                   Fruit.LEMON,
+                                   Fruit.LIME,
+                                   Fruit.TANGERINE,
+                                   Fruit.GRAPEFRUIT)
+        self.vision_basket = Vision(Ports.PORT2, 50,
+                                    Fruit.LEMON_BASKET,
+                                    Fruit.LIME_BASKET,
+                                    Fruit.TANGERINE_BASKET)
 
-        self._init = 0
-        self._init_heading = 0
-        self._init_height = 0
-        self._signature = None
-        self._search = 60
+        self.orientation = START_ORIENTATION
 
-    def select_fruit(self) -> None:
-        if len(pick_trees) > 0:
-            tree = self.orchard.get(pick_trees[0])
-            assert isinstance(tree, TreeAccess)
-            if tree.has_fruit():
-                orchard.set_target(pick_trees[0])
-            else:
-                pick_trees.pop(0)
-                self.select_fruit()
-
-    def select_basket(self) -> None:
-        for basket in self.orchard.baskets:
-            if self._signature in basket.colors:
-                orchard.set_target(basket.name)
-                return
-
-    def color_basket(self) -> bool:
-        for code, fruit, name in Fruit.FRUIT_TABLE:
-            snapshot = self.vision.take_snapshot(code)
-            if snapshot:
-                basket = self.orchard.current()
-                assert isinstance(basket, BasketAccess)
-                basket.colors.append(fruit)
-                print(name)
-        return False
+        self.chassis.calibrate()
+        self.tower.calibrate()
 
     def at_tree(self) -> bool:
         left = self.left_sonar.distance(MM)
@@ -1273,273 +1165,452 @@ class Robot:
         diff = angle - self._orientation
         self._orientation = angle
         self.chassis.set_rot_target(-fix_degrees(diff))
+
+
+class TravelState:
+    IDLE = 0
+    """Robot is stopped, currently waiting for an updated target."""
+    TURN = 1
+    """Robot is turning, using the IMU to maintain heading."""
+    LINE = 2
+    """Robot is following the line."""
+    THRU_LINE = 3
+    """Robot is traveling forward until it passes a line intersection."""
+    THRU_TREE = 3
+    """Robot is traveling forward until it passes a tree."""
+    SLOW = 4
+    """Robot is slowing as it approaches a known distance."""
+
+
+class TravelStateMachine:
+
+    def __init__(self) -> None:
+        self._state = TravelState.IDLE
     
-    def travel_line(self) -> None:
-        if self.orchard.node_type() == NodeType.WALL:
-                if self.bumper.pressing():
-                    self.chassis.set_lin_target(-LINE_WIDTH)
-                    self.travel_state = TravelState.SLOW
-            
-        elif orchard.node_type() == NodeType.TREE:
-            if self.at_tree():
-                if self.orchard.stop_at_next():
-                    self.chassis.set_lin_target(SONAR_TO_TURN)
-                    self.travel_state = TravelState.SLOW
-                    print("slowing to stop")
-                else:
-                    self.chassis.thru = self.at_tree
-                    self.travel_state = TravelState.THRU
-                    print("driving through tree")
+    def update(self, robot: Robot) -> None:
+        if self._state == TravelState.IDLE:
+            self.__handle_idle(robot)
+        elif self._state == TravelState.TURN:
+            self.__handle_turn(robot)
+        elif self._state == TravelState.LINE:
+            self.__handle_line(robot)
+        elif self._state == TravelState.THRU_LINE:
+            self.__handle_thru_line(robot)
+        elif self._state == TravelState.THRU_TREE:
+            self.__handle_thru_tree(robot)
+        elif self._state == TravelState.SLOW:
+            self.__handle_slow(robot)
 
-        elif orchard.node_type() == NodeType.LINE:
-            if self.chassis.on_node():
-                if self.orchard.stop_at_next():
-                    self.chassis.set_lin_target(LINE_TO_TURN)
-                    self.travel_state = TravelState.SLOW
-                    print("slowing to stop")
-                else:
-                    self.chassis.thru = self.chassis.on_node
-                    self.travel_state = TravelState.THRU
-                    print("driving through line")
-    
-    def travel(self) -> None:
-        if self.travel_state == TravelState.IDLE:
-            if not self.orchard.is_end():
-                self.orient_toward(self.orchard.angle_to())
-                self.travel_state = TravelState.TURN
-                print("turning")
+    def __handle_idle(self, robot: Robot) -> None:
+        if not robot.orchard.is_end():
+            robot.orient_toward(robot.orchard.angle_to())
+            self._state = TravelState.TURN
+            print("turning toward next node")
 
-        elif self.travel_state == TravelState.TURN:
-            if not self.chassis.rotate_imu():
-                if self.orchard.node_type() == NodeType.BASKET:
-                    self.chassis.set_lin_target(self.orchard.next_distance())
-                    self.travel_state = TravelState.SLOW
-                    print("slowing to stop")
-                else:
-                    self.travel_state = TravelState.LINE
-                    print("line following")
-
-        elif self.travel_state == TravelState.LINE:
-            self.chassis.line_follow()
-            self.travel_line()
-
-        elif self.travel_state == TravelState.THRU:
-            if self.chassis.thru == self.at_tree:
-                self.chassis.line_follow()
+    def __handle_turn(self, robot: Robot) -> None:
+        if not robot.chassis.rotate_imu():
+            if robot.orchard.node_type() == NodeType.BASKET:
+                robot.chassis.set_lin_target(robot.orchard.next_distance())
+                self._state = TravelState.SLOW
+                print("slowing to stop")
             else:
-                self.chassis.drive_straight()
-            if not self.chassis.thru():
-                self.travel_state = TravelState.IDLE
-                self.orchard.move()
+                self._state = TravelState.LINE
+                print("line following")
 
-        elif self.travel_state == TravelState.SLOW:
-            if not self.chassis.drive_enc(chassis.line_follow,
-                                          slow=self.orchard.stop_at_next()):
-                self.travel_state = TravelState.IDLE
-                self.orchard.move()
-
-    def deposit(self, action, gripper: bool) -> None:
-        if self.deposit_state == DepositState.START:
-            self.orient_toward(0)
-            self.deposit_state = DepositState.TURN_AWAY
-            print("turning away")
-
-        elif self.deposit_state == DepositState.TURN_AWAY:
-            if not self.chassis.rotate_imu():
-                if gripper:
-                    self._init = self.chassis.get_position_mm()
-                else:
-                    self.chassis.set_lin_target(BASKET_TO_VISION)
-                self.deposit_state = DepositState.DRIVE_AWAY
-                print("driving away")
+    def __handle_line(self, robot: Robot) -> None:
+        robot.chassis.line_follow()
         
-        elif self.deposit_state == DepositState.DRIVE_AWAY:
-            if gripper:
-                self.chassis.drive_straight(-1000)
-                drive = self.bumper.pressing()
-            else:
-                drive = not self.chassis.drive_enc(self.chassis.drive_straight)
-            if drive:
-                self.chassis.halt()
-                self.deposit_state = DepositState.ACTION
-                print("executing action")
-        
-        elif self.deposit_state == DepositState.ACTION:
-            if not action():
-                if gripper:
-                    self.chassis.set_lin_target(self._init -
-                                                self.chassis.get_position_mm())
-                else:
-                    self.chassis.set_lin_target(-BASKET_TO_VISION)
-                self.deposit_state = DepositState.DRIVE_BACK
-                print("driving back")
-        
-        elif self.deposit_state == DepositState.DRIVE_BACK:
-            if not self.chassis.drive_enc(self.chassis.drive_straight):
-                self.deposit_state = DepositState.END
-                print("complete")
-
-    def next_basket(self) -> None:
-        if len(self._unsetup) > 0:
-            self.orchard.set_target(self._unsetup.pop().name)
-            self.setup_state = SetupState.TRAVEL
-        else:
-            self.setup_state = SetupState.END
-        
-    def setup(self) -> None:
-        if self.setup_state == SetupState.START:
-            self.travel()
-            if self.orchard.is_end() and self.orchard.current().name == "L1":
-                self.next_basket()
-                print("got to baskets")
-            elif (self.orchard.target().name != "L1" and
-                  self.travel_state == TravelState.IDLE):
-                self.orchard.set_target("L1")
+        if robot.orchard.node_type() == NodeType.WALL:
+                if robot.bumper.pressing():
+                    robot.chassis.set_lin_target(-LINE_WIDTH)
+                    self._state = TravelState.SLOW
+                    print("stopping at wall")
             
-        elif self.setup_state == SetupState.TRAVEL:
-            self.travel()
-            if self.orchard.is_end():
-                self.setup_state = SetupState.DEPOSIT
-                self.deposit_state = DepositState.START
-                print("got to node")
+        elif robot.orchard.node_type() == NodeType.TREE:
+            if robot.at_tree():
+                if robot.orchard.stop_at_next():
+                    robot.chassis.set_lin_target(SONAR_TO_TURN)
+                    self._state = TravelState.SLOW
+                    print("slowing to stop")
+                else:
+                    self._state = TravelState.THRU_TREE
+                    print("driving past tree")
 
-        elif self.setup_state == SetupState.DEPOSIT:
-            self.deposit(self.color_basket, False)
-            if self.deposit_state == DepositState.END:
-                self.next_basket()
-                print("found baasket colors")
+        elif robot.orchard.node_type() == NodeType.LINE:
+            if robot.chassis.on_node():
+                if robot.orchard.stop_at_next():
+                    robot.chassis.set_lin_target(LINE_TO_TURN)
+                    self._state = TravelState.SLOW
+                    print("slowing to stop")
+                else:
+                    self._state = TravelState.THRU_LINE
+                    print("driving through line intersection")
+
+    def __handle_thru_line(self, robot: Robot) -> None:
+        robot.chassis.drive_straight()
+        
+        if not robot.chassis.on_node():
+            self._state = TravelState.IDLE
+            robot.orchard.move()
+            print("reached node")
     
-    def grab(self) -> None:
-        if self.grab_state == GrabState.START:
-            tree = self.orchard.current()
-            assert isinstance(tree, TreeAccess)
-            dir, self._signature, self._init_height = tree.pick()
-            self.orient_toward(dir)
-            self.tower.set_target(50)
-            self._init_heading = self.chassis.get_heading()
-            self.grab_state = GrabState.ORIENT
+    def __handle_thru_tree(self, robot: Robot) -> None:
+        robot.chassis.line_follow()
+        
+        if not robot.at_tree():
+            self._state = TravelState.IDLE
+            robot.orchard.move()
+            print("reached node")
 
-        elif self.grab_state == GrabState.ORIENT:
-            if ((not self.chassis.rotate_imu()) and
-                (not self.tower.move_to())):
-                self.chassis.set_rot_target(30)
-                self._search = 60
-                self.grab_state = GrabState.SEARCH
+    def __handle_slow(self, robot: Robot) -> None:
+        if not robot.chassis.drive_enc(robot.chassis.line_follow,
+                                        slow=robot.orchard.stop_at_next()):
+            self._state = TravelState.IDLE
+            robot.orchard.move()
+            print("reached node")
 
-        elif self.grab_state == GrabState.SEARCH:
-            if not self.chassis.rotate_imu():
-                self._search = -self._search
-                self.chassis.set_rot_target(self._search)
-            snapshot = self.vision.take_snapshot(self._signature)
-            print(snapshot)
+
+class DepositState:
+    TURN_AWAY = 0
+    """Turns away from the basket by 90 degrees."""
+    DRIVE_AWAY = 1
+    """Drive away from the basket a given distance."""
+    SCAN = 2
+    """Runs a given action until completion."""
+    DRIVE_TOWARD = 3
+    """Drive toward the basket until hitting the bumper."""
+    RELEASE = 4
+    """Open the gripper."""
+    RETURN = 5
+    """Drives back to its initial position."""
+    END = 6
+    """Deposit sequence has been completed."""
+
+
+class DepositStateMachine:
+
+    def __init__(self) -> None:
+        self._state = DepositState.END
+        self._release = False
+        self._init = 0
+    
+    def set_relase(self) -> None:
+        self._release = True
+
+    def start(self, robot: Robot):
+        robot.orient_toward(0)
+        self._state = DepositState.TURN_AWAY
+        print("turning away from basket")
+
+    def update(self, robot: Robot) -> bool:
+        if self._state == DepositState.TURN_AWAY:
+            self.__handle_turn_away(robot)
+        elif self._state == DepositState.DRIVE_AWAY:
+            self.__handle_drive_away(robot)
+        elif self._state == DepositState.SCAN:
+            self.__handle_scan(robot)
+        elif self._state == DepositState.DRIVE_TOWARD:
+            self.__handle_drive_toward(robot)
+        elif self._state == DepositState.RELEASE:
+            self.__handle_release(robot)
+        elif self._state == DepositState.RETURN:
+            self.__handle_return(robot)
+        elif self._state == DepositState.END:
+            return False
+        return True
+        
+    def __handle_turn_away(self, robot: Robot) -> None:
+        if not robot.chassis.rotate_imu():
+            if self._release:
+                self._init = robot.chassis.get_position_mm()
+                self._state = DepositState.DRIVE_TOWARD
+                print("driving toward basket")
+            else:
+                robot.chassis.set_lin_target(BASKET_TO_VISION)
+                self._state = DepositState.DRIVE_AWAY
+                print("driving away from basket")
+
+    def __handle_drive_away(self, robot: Robot) -> None:
+        if not robot.chassis.drive_enc(robot.chassis.drive_straight):
+            self._state = DepositState.SCAN
+            print("scanning basket")
+
+    def __handle_scan(self, robot: Robot) -> None:
+        basket = robot.orchard.current()
+        assert isinstance(basket, BasketAccess)
+        for code, fruit, name in Fruit.FRUIT_TABLE:
+            snapshot = robot.vision_basket.take_snapshot(code)
             if snapshot:
-                self.chassis.halt()
-                self._init = self.chassis.get_position_mm()
-                self.grab_state = GrabState.CENTER
+                basket.colors.append(fruit)
+                print(name)
+        
+        if len(basket.colors) > 0:
+            robot.chassis.set_lin_target(-BASKET_TO_VISION)
+            self._state = DepositState.RETURN
+            print("driving back")
 
-        elif self.grab_state == GrabState.CENTER:
-            print(vision.installed())
-            self.vision.take_snapshot(self._signature)
-            x_diff = X_GOAL - self.vision.largest_object().centerX
-            y_diff = Y_GOAL - self.vision.largest_object().centerY
-            h_diff = H_GOAL - self.vision.largest_object().height
+    def __handle_drive_toward(self, robot: Robot) -> None:
+        robot.chassis.drive_straight(-1000)
+
+        if robot.bumper.pressing():
+            robot.chassis.halt()
+            self._state = DepositState.RELEASE
+            print("releasing fruit")
+
+    def __handle_release(self, robot: Robot) -> None:
+        if not robot.tower.close_gripper():
+            robot.chassis.set_lin_target(self._init -
+                                         robot.chassis.get_position_mm())
+            self._state = DepositState.RETURN
+            print("driving back")
+
+    def __handle_return(self, robot: Robot) -> None:
+        if not robot.chassis.drive_enc(robot.chassis.drive_straight):
+            self._state = DepositState.END
+            print("back on the line")
+
+
+class GrabState:
+    ORIENT = 0
+    """Turns to face the tree, raises tower halfway."""
+    BACKUP = 1
+    """Backs away from the tree a given amount."""
+    SEARCH = 2
+    """Identifies the fruit."""
+    CENTER = 3
+    """Centers on and approaches the fruit."""
+    APPROACH = 4
+    """Drives toward the fruit a fixed amount."""
+    GRAB = 5
+    """Closes the gripper on the fruit."""
+    RETURN = 6
+    """Backs up the same distance it drove forward."""
+    REORIENT = 7
+    """Rotates until it finds the line, and update orientation."""
+    END = 8
+    """Robot has grabbed the fruit"""
+
+
+class GrabStateMachine:
+
+    def __init__(self) -> None:
+        self._state = GrabState.END
+        self._init_position = 0
+        self._init_heading = 0
+        self._search = 0
+        self._signature = None
+
+    def get_signature(self) -> Signature:
+        assert self._signature
+        return self._signature
+
+    def start(self, robot: Robot) -> None:
+        tree = robot.orchard.current()
+        assert isinstance(tree, TreeAccess)
+        dir, self._signature, self._init_height = tree.pick()
+        robot.orient_toward(dir)
+        robot.tower.set_target(50)
+        self._init_heading = robot.chassis.get_heading()
+        self.grab_state = GrabState.ORIENT
+        print("turning to face tree and raising tower")
+
+    def update(self, robot: Robot) -> bool:
+        if self._state == GrabState.ORIENT:
+            self.__handle_orient(robot)
+        elif self._state == GrabState.BACKUP:
+            self.__handle_backup(robot)
+        elif self._state == GrabState.SEARCH:
+            self.__handle_search(robot)
+        elif self._state == GrabState.CENTER:
+            self.__handle_center(robot)
+        elif self._state == GrabState.APPROACH:
+            self.__handle_approach(robot)
+        elif self._state == GrabState.GRAB:
+            self.__handle_grab(robot)
+        elif self._state == GrabState.RETURN:
+            self.__handle_return(robot)
+        elif self._state == GrabState.REORIENT:
+            self.__handle_reorient(robot)
+        elif self._state == GrabState.END:
+            return False
+        return True
+
+    def __handle_orient(self, robot: Robot) -> None:
+        robot.tower.move_to()
+        if not robot.chassis.rotate_imu():
+            robot.chassis.set_lin_target(LINE_TO_TURN)
+            self.grab_state = GrabState.BACKUP
+            print("backing up from tree and raising tower")
+
+    def __handle_backup(self, robot: Robot) -> None:
+        if not (robot.chassis.rotate_imu() or robot.tower.move_to()):
+            robot.chassis.set_rot_target(30)
+            self._search = 60
+            self.grab_state = GrabState.SEARCH
+            print("searching for tree")
+
+    def __handle_search(self, robot: Robot) -> None:
+        snapshot = robot.vision_fruit.take_snapshot(self._signature)
+        print(snapshot)
+        if snapshot:
+            robot.chassis.halt()
+            self._init_position = robot.chassis.get_position_mm()
+            self.grab_state = GrabState.CENTER
+            print("centering on tree")
+        
+        if not robot.chassis.rotate_imu():
+            self._search = -self._search
+            robot.chassis.set_rot_target(self._search)
+
+    def __handle_center(self, robot: Robot) -> None:
+            print(robot.vision_fruit.installed())
+            robot.vision_fruit.take_snapshot(self._signature)
+            largest = robot.vision_fruit.largest_object()
+
+            x_diff = X_GOAL - largest.centerX
+            y_diff = Y_GOAL - largest.centerY
+            h_diff = H_GOAL - largest.height
             print(x_diff, y_diff, h_diff)
 
-            self.chassis.rotate(x_diff * KP_CENTERING)
-            self.tower.move(y_diff * KP_RAISING)
-            self.chassis.drive_straight(-h_diff * KP_CLOSING)
+            effort = robot.chassis.get_effort(h_diff * KP_CLOSING,
+                                              MAX_EFFORT_TURN)
+            diff = x_diff * KP_CENTERING
+            robot.chassis.left_motor.spin(FORWARD, effort + diff, PERCENT)
+            robot.chassis.right_motor.spin(FORWARD, effort - diff, PERCENT)
+
+            robot.tower.move(y_diff * KP_RAISING)
 
             if h_diff < H_CUTOFF:
-                self.tower.set_target(self.tower.get_position() - HEIGHT_OFFSET)
-                self.chassis.set_lin_target(-LIN_OFFSET)
-                self.grab_state = GrabState.FORWARD
+                robot.tower.set_target(robot.tower.get_position() -
+                                       HEIGHT_OFFSET)
+                robot.chassis.set_lin_target(-LIN_OFFSET)
+                self.grab_state = GrabState.APPROACH
+                print("making final approach")
 
-        elif self.grab_state == GrabState.FORWARD:
-            if ((not self.chassis.drive_straight()) and
-                (not self.tower.move_to())):
-                self.grab_state = GrabState.GRAB
+    def __handle_approach(self, robot: Robot) -> None:
+        if not (robot.chassis.drive_enc(robot.chassis.drive_straight) or
+                robot.tower.move_to()):
+            self.grab_state = GrabState.GRAB
+            print("grabbing fruit")
 
-        elif self.grab_state == GrabState.GRAB:
-            if not self.tower.close_gripper():
-                self.chassis.set_lin_target(-self._init)
-                self.grab_state = GrabState.RETURN
+    def __handle_grab(self, robot: Robot) -> None:
+        if not robot.tower.close_gripper():
+            robot.chassis.set_lin_target(self._init_position -
+                                         robot.chassis.get_position_mm() +
+                                         LINE_TO_TURN)
+            self.grab_state = GrabState.RETURN
+            print("returning to the line")
 
-        elif self.grab_state == GrabState.RETURN:
-            if not self.chassis.drive_enc(self.chassis.drive_straight):
-                self.grab_state = GrabState.REORIENT
-                self.tower.set_target()
-                self.chassis.set_rot_target(
-                    fix_degrees(self.chassis.get_heading() -
-                                self._init_heading))
+    def __handle_return(self, robot: Robot) -> None:
+        if not robot.chassis.drive_enc(robot.chassis.drive_straight):
+            robot.tower.set_target()
+            robot.chassis.set_rot_target(
+                fix_degrees(robot.chassis.get_heading() - self._init_heading))
+            self.grab_state = GrabState.REORIENT
+            print("turning back toward initial heading")
 
-        elif self.grab_state == GrabState.REORIENT:
-            if ((not self.chassis.rotate_imu()) and
-                (not self.tower.move_to())):
-                self.grab_state = GrabState.END
+    def __handle_reorient(self, robot: Robot) -> None:
+        if not (robot.chassis.rotate_imu() or robot.tower.move_to()):
+            self.grab_state = GrabState.END
+            print("back in initial position")
 
 
-brain = Brain()
+class MasterState:
+    TRAVEL_SETUP = 0
+    """Driving toward the next basket node to scan."""
+    DEPOSIT_SETUP = 1
+    """Scanning the current basket node."""
+    TRAVEL_FRUIT = 2
+    """Traversing the currently defined path to a fruit."""
+    GRAB = 3
+    """Locating and grabbing a fruit, and storing the color."""
+    TRAVEL_BASKET = 4
+    """Traversing the currently defined path to a basket."""
+    DEPOSIT_FRUIT = 5
+    """Depositing the current fruit in the correct basket."""
 
-chassis = Chassis(Motor(Ports.PORT9, True),
-                  Motor(Ports.PORT10),
-                  Line(brain.three_wire_port.e),
-                  Line(brain.three_wire_port.f),
-                  Inertial(Ports.PORT11))
 
-tower = Tower(Motor(Ports.PORT1),
-              Limit(brain.three_wire_port.g),
-              Motor(Ports.PORT3, True))
+class MasterStateMachine:
 
-vision = Vision(Ports.PORT2, 50,
-                Fruit.LEMON,
-                Fruit.LEMON_BASKET,
-                Fruit.LIME,
-                Fruit.LIME_BASKET,
-                Fruit.TANGERINE,
-                Fruit.TANGERINE_BASKET,
-                Fruit.GRAPEFRUIT)
+    def __init__(self) -> None:
+        self._travel_state = TravelStateMachine()
+        self._deposit_state = DepositStateMachine()
+        self._grab_state = GrabStateMachine()
+        self._robot = Robot()
 
-orchard = Orchard(START_NODE)
+        self.__next_setup()
 
-robot = Robot(chassis,
-              tower,
-              vision,
-              Sonar(brain.three_wire_port.a),
-              Sonar(brain.three_wire_port.c),
-              Bumper(brain.three_wire_port.h),
-              orchard, START_ORIENTATION)
+        self._pick_trees = list(PICK_TREES)
+        self._unsetup = self._robot.orchard.baskets.copy()
 
-chassis.calibrate()
-tower.calibrate()
+    def update(self) -> None:
+        if self._state == MasterState.TRAVEL_SETUP:
+            self.__handle_travel_setup()
+        elif self._state == MasterState.DEPOSIT_SETUP:
+            self.__handle_deposit_setup()
+        elif self._state == MasterState.TRAVEL_FRUIT:
+            self.__handle_travel_fruit()
+        elif self._state == MasterState.GRAB:
+            self.__handle_grab()
+        elif self._state == MasterState.TRAVEL_BASKET:
+            self.__handle_travel_basket()
+        elif self._state == MasterState.DEPOSIT_FRUIT:
+            self.__handle_deposit_fruit()
 
-routine = Routine.SETUP
+    def __handle_travel_setup(self) -> None:
+        self._travel_state.update(self._robot)
+        if self._robot.orchard.is_end():
+            self._state = MasterState.DEPOSIT_SETUP
+            self._deposit_state.start(self._robot)
+            
+    def __handle_deposit_setup(self) -> None:
+        if not self._deposit_state.update(self._robot):
+            self.__next_setup()
+
+    def __handle_travel_fruit(self) -> None:
+        self._travel_state.update(self._robot)
+        if self._robot.orchard.is_end():
+            self._state = MasterState.GRAB
+            self._grab_state.start(self._robot)
+
+    def __handle_grab(self) -> None:
+        if not self._grab_state.update(self._robot):
+            signature = self._grab_state.get_signature()
+            for basket in self._robot.orchard.baskets:
+                if signature in basket.colors:
+                    self._robot.orchard.set_target(basket.name)
+                    self._state = MasterState.TRAVEL_BASKET
+                    return
+                    
+    def __handle_travel_basket(self) -> None:
+        self._travel_state.update(self._robot)
+        if self._robot.orchard.is_end():
+            self.__select_fruit()
+
+    def __handle_deposit_fruit(self) -> None:
+        if not self._deposit_state.update(self._robot):
+            self.__select_fruit()
+
+    def __select_fruit(self) -> None:
+        if len(self._pick_trees) > 0:
+            tree = self._robot.orchard.get(self._pick_trees[0])
+            assert isinstance(tree, TreeAccess)
+            if tree.has_fruit():
+                self._robot.orchard.set_target(self._pick_trees[0])
+                self._state = MasterState.TRAVEL_FRUIT
+            else:
+                self._pick_trees.pop(0)
+                self.__select_fruit()
+    
+    def __next_setup(self) -> None:
+            if len(self._unsetup) > 0:
+                self._robot.orchard.set_target(self._unsetup.pop().name)
+                self._state = MasterState.TRAVEL_SETUP
+            else:
+                self.__select_fruit()
+
+
+state_machine = MasterStateMachine()
 
 while True:
-    if routine == Routine.SETUP:
-        robot.setup()
-        if robot.setup_state == SetupState.END:
-            robot.select_fruit()
-            routine = Routine.TRAVEL_FRUIT
-
-    elif routine == Routine.TRAVEL_FRUIT:
-        robot.travel()
-        if orchard.is_end():
-            routine = Routine.GRAB
-            robot.grab_state = GrabState.START
-
-    elif routine == Routine.GRAB:
-        robot.grab()
-        if robot.grab_state == GrabState.END:
-            robot.select_basket()
-            routine = Routine.TRAVEL_BASKET
-    
-    elif routine == Routine.TRAVEL_BASKET:
-        robot.travel()
-        if orchard.is_end():
-            routine = Routine.DEPOSIT
-    
-    elif routine == Routine.DEPOSIT:
-        robot.deposit(tower.open_gripper, True)
-        if robot.deposit_state == DepositState.END:
-            robot.select_fruit()
-            routine = Routine.TRAVEL_FRUIT
+    state_machine.update()
